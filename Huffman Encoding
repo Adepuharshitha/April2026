@@ -1,0 +1,31 @@
+import heapq
+class Node:
+    def __init__(self,freq,char=None):
+        self.freq=freq
+        self.char=char
+        self.left=None
+        self.right=None
+class Solution:
+    def huffmanCodes(self,s,f):
+        if len(s)==1:
+            return ["0"]
+        heap=[]
+        for i in range(len(s)):
+            heapq.heappush(heap,(f[i],i,Node(f[i],s[i])))
+        while len(heap)>1:
+            freq1,idx1,left=heapq.heappop(heap)
+            freq2,idx2,right=heapq.heappop(heap)
+            new_node=Node(freq1+freq2)
+            new_node.left=left
+            new_node.right=right
+            heapq.heappush(heap,(freq1+freq2,min(idx1,idx2),new_node))
+        root=heap[0][2]
+        res=[]
+        def preorder(node,code):
+            if node.char!=None:
+                res.append(code)
+                return
+            preorder(node.left,code+"0")
+            preorder(node.right,code+"1")
+        preorder(root,"")
+        return res
